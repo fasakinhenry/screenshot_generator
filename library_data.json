@@ -1,0 +1,23 @@
+{
+    "978-0-13-468599-1": {
+        "title": "The Pragmatic Programmer",
+        "author": "David Thomas",
+        "isbn": "978-0-13-468599-1",
+        "copies": 5,
+        "borrowed": 1
+    },
+    "978-0-59-651798-7": {
+        "title": "Head First Python",
+        "author": "Paul Barry",
+        "isbn": "978-0-59-651798-7",
+        "copies": 3,
+        "borrowed": 0
+    },
+    "978-0-23-345344-3": {
+        "title": "The way of Nion",
+        "author": "Castiel Argosi",
+        "isbn": "978-0-23-345344-3",
+        "copies": 1,
+        "borrowed": 1
+    }
+}

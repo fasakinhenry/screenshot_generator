@@ -1,0 +1,9 @@
+============================================================
+           TEXT FILE ANALYSIS REPORT
+============================================================
+
+  File Analyzed: matrix.py
+  Total Lines:                    141
+  Total Words:                    470
+  Total Characters :   2840
+  Most Frequent Word:       "self" (41 times)
