@@ -3,11 +3,14 @@ from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
 import subprocess
 import os
+import json
+import shutil
 
 # ---- CONFIG ----
 SRC_DIR = "input_code"
 HTML_DIR = "html_temp"
 PDF_DIR = "pdf_output"
+CONFIG_FILE = "students.json"
 
 STYLE = "default"
 FONT_FAMILY = "Consolas, 'JetBrains Mono', monospace"
@@ -15,12 +18,6 @@ FONT_SIZE = "14px"
 FONT_WEIGHT = "600"
 LINE_HEIGHT = "1.2"
 DPI = "400"
-
-STUDENT_INFO = {
-    "name": "OLOGUNORE HONOUR AYOMIKUN", 
-    "mat": "SEN/24/9518",
-    "dept": "SOFTWARE ENGINEERING"
-}
 
 HEADER_TEMPLATE = """\
 #!/usr/bin/env python3
@@ -31,10 +28,6 @@ HEADER_TEMPLATE = """\
 """
 
 WKHTML = "wkhtmltopdf"
-
-# ---- SETUP DIRECTORIES ----
-os.makedirs(HTML_DIR, exist_ok=True)
-os.makedirs(PDF_DIR, exist_ok=True)
 
 # ---- FUNCTIONS ----
 def generate_html(py_file, html_path, student_info):
@@ -47,18 +40,13 @@ def generate_html(py_file, html_path, student_info):
     formatter = HtmlFormatter(linenos='inline', cssclass="highlight", style=STYLE)
     pygments_css = formatter.get_style_defs('.highlight')
 
-    filename = os.path.basename(py_file)
-
     custom_css = f"""
     <style>
     {pygments_css}
-
     body {{
         font-family: {FONT_FAMILY};
         margin: 20px;
     }}
-
-
     .highlight pre {{
         font-size: {FONT_SIZE} !important;
         font-weight: {FONT_WEIGHT} !important;
@@ -101,7 +89,7 @@ def generate_pdf(html_path, pdf_path):
         WKHTML,
         "--enable-local-file-access",
         "--disable-smart-shrinking",
-        "--dpi", DPI,
+        "--dpi", str(DPI),
         "-s", "A4",
         "-O", "Portrait",
         html_path,
@@ -113,18 +101,57 @@ def process_file(py_file, student_info):
     base = os.path.splitext(os.path.basename(py_file))[0]
     html_path = os.path.join(HTML_DIR, base + ".html")
     pdf_path = os.path.join(PDF_DIR, base + ".pdf")
-
     generate_html(py_file, html_path, student_info)
     generate_pdf(html_path, pdf_path)
     print(f"Created: {pdf_path}")
 
 
+def clean_folder(folder):
+    if os.path.exists(folder):
+        shutil.rmtree(folder)
+    os.makedirs(folder, exist_ok=True)
+
+
+def load_students():
+    with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def safe_name(name):
+    return name.lower().replace(" ", "_")
+
+
+def zip_output(student_name):
+    zip_name = f"csc_assignment_{safe_name(student_name)}.zip"
+    # Copy PDF folder temporarily
+    temp_folder = f"temp_{safe_name(student_name)}"
+    shutil.copytree(PDF_DIR, temp_folder)
+    subprocess.run(["7z", "a", "-tzip", zip_name, temp_folder], check=True)
+    shutil.rmtree(temp_folder)
+    print(f"📦 Created zip: {zip_name}")
+
+
 def main():
-    for file in os.listdir(SRC_DIR):
-        if file.endswith(".py"):
-            # process_file(file, STUDENT_INFO)
-            full_path = os.path.join(SRC_DIR, file)
-            process_file(full_path, STUDENT_INFO)
+    students = load_students()
+
+    for student in students:
+        print(f"\n🚀 Processing student: {student['name']}")
+        clean_folder(HTML_DIR)
+        clean_folder(PDF_DIR)
+
+        for file in os.listdir(SRC_DIR):
+            if file.endswith(".py"):
+                full_path = os.path.join(SRC_DIR, file)
+                process_file(full_path, student)
+
+        # Remove default unwanted PDFs if any
+        for unwanted in ["generate.pdf", "generate2.pdf"]:
+            path = os.path.join(PDF_DIR, unwanted)
+            if os.path.exists(path):
+                os.remove(path)
+
+        # Zip the output
+        zip_output(student["name"])
 
 
 if __name__ == "__main__":
