@@ -1,4 +1,4 @@
-#!usr/bin/env bash
+#!/usr/bin/env bash
 
 filename="csc_assignment_$1.zip"
 echo "getting destination ready..."
