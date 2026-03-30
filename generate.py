@@ -5,7 +5,7 @@ import subprocess
 import os
 
 # ---- CONFIG ----
-SRC_DIR = "."
+SRC_DIR = "input_code"
 HTML_DIR = "html_temp"
 PDF_DIR = "pdf_output"
 
@@ -110,7 +110,7 @@ def generate_pdf(html_path, pdf_path):
 
 
 def process_file(py_file, student_info):
-    base = os.path.splitext(py_file)[0]
+    base = os.path.splitext(os.path.basename(py_file))[0]
     html_path = os.path.join(HTML_DIR, base + ".html")
     pdf_path = os.path.join(PDF_DIR, base + ".pdf")
 
@@ -122,7 +122,9 @@ def process_file(py_file, student_info):
 def main():
     for file in os.listdir(SRC_DIR):
         if file.endswith(".py"):
-            process_file(file, STUDENT_INFO)
+            # process_file(file, STUDENT_INFO)
+            full_path = os.path.join(SRC_DIR, file)
+            process_file(full_path, STUDENT_INFO)
 
 
 if __name__ == "__main__":
