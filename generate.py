@@ -5,19 +5,15 @@ import subprocess
 import os
 import json
 import shutil
+import random
 
-# ---- CONFIG ----
 SRC_DIR = "input_code"
 HTML_DIR = "html_temp"
 PDF_DIR = "pdf_output"
+OUTPUT_TXT_DIR = "output_txt"
 CONFIG_FILE = "students.json"
 
-STYLE = "default"
-FONT_FAMILY = "Consolas, 'JetBrains Mono', monospace"
-FONT_SIZE = "14px"
-FONT_WEIGHT = "600"
-LINE_HEIGHT = "1.2"
-DPI = "400"
+WKHTML = "wkhtmltopdf"
 
 HEADER_TEMPLATE = """\
 #!/usr/bin/env python3
@@ -27,132 +23,112 @@ HEADER_TEMPLATE = """\
 # --------------------------
 """
 
-WKHTML = "wkhtmltopdf"
+# ---------- HELPERS ----------
 
-# ---- FUNCTIONS ----
-def generate_html(py_file, html_path, student_info):
-    with open(py_file, "r", encoding="utf-8") as f:
-        code = f.read()
-
-    header_text = HEADER_TEMPLATE.format(**student_info)
-    code_with_header = header_text + "\n" + code
-
-    formatter = HtmlFormatter(linenos='inline', cssclass="highlight", style=STYLE)
-    pygments_css = formatter.get_style_defs('.highlight')
-
-    custom_css = f"""
-    <style>
-    {pygments_css}
-    body {{
-        font-family: {FONT_FAMILY};
-        margin: 20px;
-    }}
-    .highlight pre {{
-        font-size: {FONT_SIZE} !important;
-        font-weight: {FONT_WEIGHT} !important;
-        line-height: {LINE_HEIGHT} !important;
-        white-space: pre-wrap !important;
-        word-break: break-word !important;
-    }}
-    </style>
-    """
-
-    html_content = f"""
-<html>
-<head>{custom_css}</head>
-<body>
-
-<div style="
-    background: #eeeeee;
-    border-bottom: 1px solid #cfcfcf;
-    padding: 6px 10px;
-    font-family: Consolas, monospace;
-    font-size: 13px;
-    font-weight: 500;
-    color: #000;
-">
-    File &nbsp; Edit &nbsp; Format &nbsp; Run &nbsp; Options &nbsp; Window &nbsp; Help
-</div>
-
-{highlight(code_with_header, PythonLexer(), formatter)}
-
-</body>
-</html>
-"""
-
-    with open(html_path, "w", encoding="utf-8") as f:
-        f.write(html_content)
-
-
-def generate_pdf(html_path, pdf_path):
-    subprocess.run([
-        WKHTML,
-        "--enable-local-file-access",
-        "--disable-smart-shrinking",
-        "--dpi", str(DPI),
-        "-s", "A4",
-        "-O", "Portrait",
-        html_path,
-        pdf_path
-    ], check=True)
-
-
-def process_file(py_file, student_info):
-    base = os.path.splitext(os.path.basename(py_file))[0]
-    html_path = os.path.join(HTML_DIR, base + ".html")
-    pdf_path = os.path.join(PDF_DIR, base + ".pdf")
-    generate_html(py_file, html_path, student_info)
-    generate_pdf(html_path, pdf_path)
-    print(f"Created: {pdf_path}")
-
+def load_students():
+    with open(CONFIG_FILE, "r") as f:
+        return json.load(f)
 
 def clean_folder(folder):
     if os.path.exists(folder):
         shutil.rmtree(folder)
-    os.makedirs(folder, exist_ok=True)
-
-
-def load_students():
-    with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
-
+    os.makedirs(folder)
 
 def safe_name(name):
     return name.lower().replace(" ", "_")
 
+# ---------- RANDOMIZATION ----------
 
-def zip_output(student_name):
-    zip_name = f"csc_assignment_{safe_name(student_name)}.zip"
-    # Copy PDF folder temporarily
-    temp_folder = f"temp_{safe_name(student_name)}"
-    shutil.copytree(PDF_DIR, temp_folder)
-    subprocess.run(["7z", "a", "-tzip", zip_name, temp_folder], check=True)
-    shutil.rmtree(temp_folder)
-    print(f"📦 Created zip: {zip_name}")
+def generate_efficiencies():
+    values = [0.75]
+    for _ in range(6):
+        values.append(round(random.uniform(0.70, 0.80), 2))
+    return values
 
+def inject_efficiencies(code, efficiencies):
+    new_line = f"efficiencies = {efficiencies}"
+    lines = code.split("\n")
+
+    return "\n".join(
+        new_line if line.strip().startswith("efficiencies") else line
+        for line in lines
+    )
+
+def create_temp_code(original_file, student):
+    with open(original_file) as f:
+        code = f.read()
+
+    efficiencies = generate_efficiencies()
+    modified = inject_efficiencies(code, efficiencies)
+
+    temp_file = f"temp_{student['mat'].replace('/', '_')}.py"
+
+    with open(temp_file, "w") as f:
+        f.write(modified)
+
+    return temp_file
+
+# ---------- PDF ----------
+
+def generate_html(py_file, html_path, student):
+    with open(py_file) as f:
+        code = f.read()
+
+    header = HEADER_TEMPLATE.format(**student)
+    code = header + "\n" + code
+
+    formatter = HtmlFormatter(linenos=True)
+    html = f"<style>{formatter.get_style_defs()}</style>" + highlight(code, PythonLexer(), formatter)
+
+    with open(html_path, "w") as f:
+        f.write(html)
+
+def generate_pdf(html, pdf):
+    subprocess.run([WKHTML, html, pdf], check=True)
+
+# ---------- MAIN ----------
 
 def main():
     students = load_students()
 
     for student in students:
-        print(f"\n🚀 Processing student: {student['name']}")
+        print(f"\n🚀 {student['name']}")
+
         clean_folder(HTML_DIR)
         clean_folder(PDF_DIR)
+        clean_folder(OUTPUT_TXT_DIR)
 
         for file in os.listdir(SRC_DIR):
             if file.endswith(".py"):
-                full_path = os.path.join(SRC_DIR, file)
-                process_file(full_path, student)
+                full = os.path.join(SRC_DIR, file)
 
-        # Remove default unwanted PDFs if any
-        for unwanted in ["generate.pdf", "generate2.pdf"]:
-            path = os.path.join(PDF_DIR, unwanted)
-            if os.path.exists(path):
-                os.remove(path)
+                temp = create_temp_code(full, student)
 
-        # Zip the output
-        zip_output(student["name"])
+                base = os.path.splitext(file)[0]
 
+                html = os.path.join(HTML_DIR, base + ".html")
+                pdf = os.path.join(PDF_DIR, base + ".pdf")
+                out_txt = os.path.join(OUTPUT_TXT_DIR, base + ".txt")
+
+                generate_html(temp, html, student)
+                generate_pdf(html, pdf)
+
+                result = subprocess.run(["python", temp], capture_output=True, text=True)
+                with open(out_txt, "w") as f:
+                    f.write(result.stdout)
+
+                os.remove(temp)
+
+        # Convert outputs to PDF
+        subprocess.run(["python", "generate2.py", "-d", OUTPUT_TXT_DIR])
+
+        # Zip
+        zip_name = f"csc_assignment_{safe_name(student['name'])}"
+        shutil.copytree(PDF_DIR, zip_name)
+        subprocess.run(["7z", "a", f"{zip_name}.zip", zip_name])
+        shutil.rmtree(zip_name)
+
+        print(f"✅ Done: {zip_name}.zip")
 
 if __name__ == "__main__":
     main()
