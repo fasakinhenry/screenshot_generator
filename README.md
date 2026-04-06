@@ -211,6 +211,6 @@ CSC201_assignment_out.pdf
 
 ## Author
 
-[GitHub: ](https://github.com/fasakinhenry)
+[GitHub: fasakinhenry](https://github.com/fasakinhenry)
 
 > Made with ❤️ by [Fasakin Henry](https://fasakinhenry.com)
