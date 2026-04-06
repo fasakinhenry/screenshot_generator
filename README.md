@@ -1,5 +1,5 @@
-# PDF Screenshot
+# PDF Screenshot Generator
 
-A simple app that creates csc assignment screenshots for submission
+PDF Scree
 
 > Made with ❤️ by [Fasakin Henry](https://github.com/fasakinhenry)

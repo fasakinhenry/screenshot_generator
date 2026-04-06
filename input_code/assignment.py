@@ -8,32 +8,32 @@ royalty_rate = 0.05
 # Efficiencies for 7 days
 efficiencies = [0.75, 0.72, 0.78, 0.74, 0.76, 0.73, 0.77]
 
-# Step 1: Calculate daily effective outputs
+# Question 1: Calculate daily effective outputs
 daily_outputs = []
 
 for eff in efficiencies:
     output = daily_extraction * eff
     daily_outputs.append(output)
 
-# Step 2: Total effective output
+# Question 2: Total effective output
 total_effective_output = sum(daily_outputs)
 
-# Step 3: Total extracted (before efficiency loss)
+# Question 3: Total extracted (before efficiency loss)
 total_extracted = daily_extraction * 7
 
-# Step 4: Revenue
+# Question 4: Revenue
 total_revenue = total_effective_output * selling_price
 
-# Step 5: Processing cost
+# Question 5: Processing cost
 total_processing_cost = total_extracted * processing_cost_per_ton
 
-# Step 6: Royalty
+# Question 6: Royalty
 royalty = royalty_rate * total_revenue
 
-# Step 7: Total cost
+# Question 7: Total cost
 total_cost = total_processing_cost + fixed_cost + royalty
 
-# Step 8: Net profit
+# Question 8: Net profit
 net_profit = total_revenue - total_cost
 
 # OUTPUTS
