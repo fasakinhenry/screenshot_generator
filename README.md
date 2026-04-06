@@ -2,7 +2,7 @@
 
 PDF Screenshot Generator is a python tool that creates a pdf document that looks like screenshots of a Python code Editor. In actuality, it generates two PDF documents: one that contains images of the code editor while another contains the output of the code execution. It is useful for creating documentation, tutorials, and presentations but it was solely created so I could generate screenshots of my code that I can print out for my CSC 201 assignment and its corresponding output.
 
-# Why I Created This Tool
+## Why I Created This Tool
 
 I created this tool because I wanted to generate screenshots of my code and its output for my CSC 201 assignment. I found it tedious to take screenshots of my code and its output manually, so I decided to automate the process. Most importantly, I wanted to do assignments for a lot of my coursemates and I wanted to do it in a way that would be efficient and time-saving. I also wanted to create a tool that would be useful for other students who might have the same need.
 
@@ -21,8 +21,6 @@ Instead of taking real screenshots, the tool generates styled PDFs that resemble
 
 This project was originally built to generate printable code and outputs for a CSC 201 assignment, but it can also be used for teaching, documentation, and demonstrations.
 
----
-
 ## What Problem Does It Solve?
 
 Taking screenshots of code and output manually can be slow and repetitive, especially when working with many files or students.
@@ -36,8 +34,6 @@ This tool automates the entire process by:
 
 It is especially useful when you need to generate multiple variations of the same assignment with different values.
 
----
-
 ## What It Does
 
 For each student and each Python file, the tool:
@@ -50,8 +46,6 @@ For each student and each Python file, the tool:
 6. Generates an **output PDF** that looks like a terminal
 7. Bundles everything into a zip file per student
 
----
-
 ## How It Works
 
 ### Code Screenshot PDF
@@ -61,8 +55,6 @@ For each student and each Python file, the tool:
 * Converts the HTML into a PDF using `wkhtmltopdf`
 
 The result looks like a clean, formatted code editor view.
-
----
 
 ### Output PDF
 
@@ -78,8 +70,6 @@ $ python assignment.py
 
 This makes it look like a real command line execution.
 
----
-
 ## Project Structure
 
 ```
@@ -92,8 +82,6 @@ project/
 ├── generate.py        # Main script
 └── README.md
 ```
-
----
 
 ## Requirements
 
@@ -111,8 +99,6 @@ Install required libraries with:
 pip install pygments
 ```
 
----
-
 ## Installation
 
 ### 1. Install wkhtmltopdf
@@ -123,8 +109,6 @@ Download and install from:
 
 Make sure it is accessible from your system path.
 
----
-
 ### 2. Install 7-Zip
 
 Download from:
@@ -133,16 +117,12 @@ Download from:
 
 Ensure the `7z` command works in your terminal.
 
----
-
 ### 3. Clone or Download the Project
 
 ```bash
 git clone https://github.com/fasakinhenry/screenshot-generator.git
 cd screenshot-generator
 ```
-
----
 
 ## Configuration
 
@@ -162,8 +142,6 @@ This file contains student details:
 
 Each student will receive their own customized PDFs. In the code, placeholders will be replaced with these details.
 
----
-
 ### input_code/
 
 Place your Python files here. Example:
@@ -181,8 +159,6 @@ efficiencies = [0.75, 0.72, 0.78, 0.74, 0.76, 0.73, 0.77]
 
 This will be replaced with unique values per student.
 
----
-
 ## Usage
 
 Run the script:
@@ -190,8 +166,6 @@ Run the script:
 ```bash
 python generate.py
 ```
-
----
 
 ## Output
 
@@ -214,8 +188,6 @@ CSC201_assignment.pdf
 CSC201_assignment_out.pdf
 ```
 
----
-
 ## Key Features
 
 * Fully automated workflow
@@ -224,15 +196,11 @@ CSC201_assignment_out.pdf
 * No manual screenshots needed
 * Scalable for large groups
 
----
-
 ## Notes
 
 * The tool runs each Python file safely using a temporary file
 * Output is captured directly from execution, not pre-written files
 * Temporary files are cleaned automatically after use
-
----
 
 ## Possible Improvements
 
@@ -241,10 +209,8 @@ CSC201_assignment_out.pdf
 * Support other programming languages
 * Add GUI interface
 
----
-
 ## Author
 
-> Made with ❤️ by [Fasakin Henry](https://fasakinhenry.com)
+[GitHub: ](https://github.com/fasakinhenry)
 
-GitHub: [https://github.com/fasakinhenry](https://github.com/fasakinhenry)
+> Made with ❤️ by [Fasakin Henry](https://fasakinhenry.com)
