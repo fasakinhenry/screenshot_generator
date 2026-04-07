@@ -1,0 +1,10 @@
+Daily Effective Outputs:
+Day 1: 900.00 tons
+Day 2: 888.00 tons
+Day 3: 912.00 tons
+Day 4: 912.00 tons
+Day 5: 888.00 tons
+Day 6: 960.00 tons
+Day 7: 840.00 tons
+
+Total Effective Output: 6300.0
