@@ -2,6 +2,8 @@
 
 PDF Screenshot Generator is a python tool that creates a pdf document that looks like screenshots of a Python code Editor. In actuality, it generates two PDF documents: one that contains images of the code editor while another contains the output of the code execution. It is useful for creating documentation, tutorials, and presentations but it was solely created so I could generate screenshots of my code that I can print out for my CSC 201 assignment and its corresponding output.
 
+> Check out some sample generated PDFs in the `pdf_output/` directory [here](pdf_output/).
+
 ## Why I Created This Tool
 
 I created this tool because I wanted to generate screenshots of my code and its output for my CSC 201 assignment. I found it tedious to take screenshots of my code and its output manually, so I decided to automate the process. Most importantly, I wanted to do assignments for a lot of my coursemates and I wanted to do it in a way that would be efficient and time-saving. I also wanted to create a tool that would be useful for other students who might have the same need.
