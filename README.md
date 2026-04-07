@@ -188,6 +188,10 @@ CSC201_assignment.pdf
 CSC201_assignment_out.pdf
 ```
 
+You can open the PDFs to see the formatted code and its output, which are designed to look like screenshots of an editor and terminal.
+
+Check the `pdf_output/` directory to see sample generated files [here](pdf_output/).
+
 ## Key Features
 
 * Fully automated workflow
