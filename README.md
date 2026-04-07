@@ -161,10 +161,10 @@ This will be replaced with unique values per student.
 
 ## Usage
 
-Run the script:
+Run the bash script after making it executable(chmod u+x wiz.sh):
 
 ```bash
-python generate.py
+./wiz.sh
 ```
 
 ## Output
